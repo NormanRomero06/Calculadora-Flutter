@@ -96,7 +96,12 @@ child: Ink(
     ],
   ),
   child: Center(
-    child: Text(text),
+    child: Text(text,
+    style: TextStyle(
+      fontSize: 35,
+      fontWeight: FontWeight.bold,
+    ),
+    ),
   ),
 ),
 );
