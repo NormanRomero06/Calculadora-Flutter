@@ -57,8 +57,55 @@ class _CalculatorState extends State<Calculator> {
               ),
             )
           ]),
-        )
-      ]),
+        ),
+        Divider(color: Colors.white),
+        Expanded(child: Container(
+          padding: EdgeInsets.all(10),
+          child: GridView.builder(
+            itemCount:  buttonList.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          ),
+            itemBuilder: (BuildContext context, int index){
+              return Custombutton(buttonList[index]);
+            },
+        ),
+        ),
+        ),
+      ],
+      ),
     );
   }
+ Widget Custombutton(String text){
+return InkWell(
+  splashColor: Colors.black12,
+onTap: (){},
+child: Ink(
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(10),
+    boxShadow: [ 
+      BoxShadow(
+       color: Colors.white.withOpacity(0.1),
+       blurRadius: 4,
+       spreadRadius: 0.5,
+       offset: Offset(-3, -3),
+    ),
+    ],
+  ),
+  child: Center(
+    child: Text(text),
+  ),
+),
+);
+
+ }
+
+
+
+
+
+
 }
