@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 class Calculator extends StatefulWidget {
   @override
@@ -35,82 +36,152 @@ class _CalculatorState extends State<Calculator> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black12,
-      body: Column(children: [
-        SizedBox(
-          height: MediaQuery.of(context).size.height / 3,
-          child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-            Container(
-              padding: EdgeInsets.all(20),
-              alignment: Alignment.centerRight,
-              child: Text(
-                userInput,
-                style: TextStyle(fontSize: 32, color: Colors.white),
+      backgroundColor: Color(0xFF1d2630),
+      body: Column(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 3,
+            child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+              Container(
+                padding: EdgeInsets.all(20),
+                alignment: Alignment.centerRight,
+                child: Text(
+                  userInput,
+                  style: TextStyle(fontSize: 32, color: Colors.white),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(10),
+                alignment: Alignment.centerRight,
+                child: Text(
+                  result,
+                  style: TextStyle(
+                      fontSize: 48,
+                      color: Colors.amber,
+                      fontWeight: FontWeight.bold),
+                ),
+              )
+            ]),
+          ),
+          Divider(color: Colors.white),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.all(10),
+              child: GridView.builder(
+                itemCount: buttonList.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                ),
+                itemBuilder: (BuildContext context, int index) {
+                  return Custombutton(buttonList[index]);
+                },
               ),
             ),
-                     Container(
-              padding: EdgeInsets.all(10),
-              alignment: Alignment.centerRight,
-              child: Text(
-                result,
-                style: TextStyle(fontSize: 48, color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-            )
-          ]),
-        ),
-        Divider(color: Colors.white),
-        Expanded(child: Container(
-          padding: EdgeInsets.all(10),
-          child: GridView.builder(
-            itemCount:  buttonList.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-          crossAxisSpacing: 12,
-          mainAxisSpacing: 12,
           ),
-            itemBuilder: (BuildContext context, int index){
-              return Custombutton(buttonList[index]);
-            },
-        ),
-        ),
-        ),
-      ],
+        ],
       ),
     );
   }
- Widget Custombutton(String text){
-return InkWell(
-  splashColor: Colors.black12,
-onTap: (){},
-child: Ink(
-  decoration: BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(10),
-    boxShadow: [ 
-      BoxShadow(
-       color: Colors.white.withOpacity(0.1),
-       blurRadius: 4,
-       spreadRadius: 0.5,
-       offset: Offset(-3, -3),
-    ),
-    ],
-  ),
-  child: Center(
-    child: Text(text,
-    style: TextStyle(
-      fontSize: 35,
-      fontWeight: FontWeight.bold,
-    ),
-    ),
-  ),
-),
-);
 
- }
+  Widget Custombutton(String text) {
+    return InkWell(
+      splashColor: Colors.black12,
+      onTap: () {
+        setState(() {
+          handleButtons(text);
+        });
+      },
+      child: Ink(
+        decoration: BoxDecoration(
+          color: getBColor(text),
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.white.withOpacity(0.1),
+              blurRadius: 4,
+              spreadRadius: 0.5,
+              offset: Offset(-3, -3),
+            ),
+          ],
+        ),
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(
+              color: getColor(text),
+              fontSize: 35,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
+  getColor(String text) {
+    if (text == "/" ||
+        text == "*" ||
+        text == "+" ||
+        text == "-" ||
+        //   text == "=" ||
+        text == "(" ||
+        text == ")") {
+      return Colors.lightBlue;
+    }
+    return Colors.white;
+  }
 
+  getBColor(String text) {
+    if (text == "AC" || text == "C") {
+      return Color.fromARGB(255, 252, 100, 100);
+    }
+    if (text == "=") {
+      return Colors.greenAccent;
+    }
+    return Colors.black26;
+  }
 
+  void handleButtons(String text) {
+    if (text == "AC") {
+      userInput = "";
+      result = "0";
+      return;
+    }
+    if (text == "C") {
+      if (userInput.isNotEmpty) {
+        userInput = userInput.substring(0, userInput.length - 1);
+        return;
+      } else {
+        return;
+      }
+    }
 
+    if(text == "="){
+      result = calculate();
+      userInput = result;
+         if(userInput.endsWith(".0")){
+        userInput = userInput.replaceAll(".0", "");
+         }
+      if(result.endsWith(".0")){
+        result = result.replaceAll(".0", "");
+        return;
+      }
+    }
 
+    userInput = userInput +text;
 
+  }
+  
+  String calculate() {
+    try{
+    var exp = Parser().parse(userInput);
+    var evaluation = exp.evaluate(EvaluationType.REAL, ContextModel());
+    return evaluation.toString();
+    }catch(e){
+      return "Error";
+    }
+
+  }
 }
