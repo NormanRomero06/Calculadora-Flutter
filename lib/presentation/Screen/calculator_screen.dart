@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
 
 class Calculator extends StatefulWidget {
+  const Calculator({super.key});
+
   @override
   State<Calculator> createState() => _CalculatorState();
 }
@@ -36,26 +38,26 @@ class _CalculatorState extends State<Calculator> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF1d2630),
+      backgroundColor: const Color(0xFF1d2630),
       body: Column(
         children: [
           SizedBox(
             height: MediaQuery.of(context).size.height / 3,
             child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
               Container(
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 alignment: Alignment.centerRight,
                 child: Text(
                   userInput,
-                  style: TextStyle(fontSize: 32, color: Colors.white),
+                  style: const TextStyle(fontSize: 32, color: Colors.white),
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 alignment: Alignment.centerRight,
                 child: Text(
                   result,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontSize: 48,
                       color: Colors.amber,
                       fontWeight: FontWeight.bold),
@@ -63,13 +65,13 @@ class _CalculatorState extends State<Calculator> {
               )
             ]),
           ),
-          Divider(color: Colors.white),
+          const Divider(color: Colors.white),
           Expanded(
             child: Container(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: GridView.builder(
                 itemCount: buttonList.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
@@ -85,6 +87,7 @@ class _CalculatorState extends State<Calculator> {
     );
   }
 
+  // ignore: non_constant_identifier_names
   Widget Custombutton(String text) {
     return InkWell(
       splashColor: Colors.black12,
@@ -102,7 +105,7 @@ class _CalculatorState extends State<Calculator> {
               color: Colors.white.withOpacity(0.1),
               blurRadius: 4,
               spreadRadius: 0.5,
-              offset: Offset(-3, -3),
+              offset: const Offset(-3, -3),
             ),
           ],
         ),
@@ -135,7 +138,7 @@ class _CalculatorState extends State<Calculator> {
 
   getBColor(String text) {
     if (text == "AC" || text == "C") {
-      return Color.fromARGB(255, 252, 100, 100);
+      return const Color.fromARGB(255, 252, 100, 100);
     }
     if (text == "=") {
       return Colors.greenAccent;
@@ -158,30 +161,28 @@ class _CalculatorState extends State<Calculator> {
       }
     }
 
-    if(text == "="){
+    if (text == "=") {
       result = calculate();
       userInput = result;
-         if(userInput.endsWith(".0")){
+      if (userInput.endsWith(".0")) {
         userInput = userInput.replaceAll(".0", "");
-         }
-      if(result.endsWith(".0")){
+      }
+      if (result.endsWith(".0")) {
         result = result.replaceAll(".0", "");
         return;
       }
     }
 
-    userInput = userInput +text;
-
+    userInput = userInput + text;
   }
-  
+
   String calculate() {
-    try{
-    var exp = Parser().parse(userInput);
-    var evaluation = exp.evaluate(EvaluationType.REAL, ContextModel());
-    return evaluation.toString();
-    }catch(e){
+    try {
+      var exp = Parser().parse(userInput);
+      var evaluation = exp.evaluate(EvaluationType.REAL, ContextModel());
+      return evaluation.toString();
+    } catch (e) {
       return "Error";
     }
-
   }
 }
